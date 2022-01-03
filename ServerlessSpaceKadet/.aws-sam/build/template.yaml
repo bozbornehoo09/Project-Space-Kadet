@@ -16,12 +16,10 @@ Resources:
         a DynamoDB table.
       Policies:
       - DynamoDBCrudPolicy:
-          TableName:
-            Ref: SampleTable
+          TableName: Users
       Environment:
         Variables:
-          SAMPLE_TABLE:
-            Ref: SampleTable
+          SAMPLE_TABLE: Users
       Events:
         Api:
           Type: Api
@@ -42,12 +40,10 @@ Resources:
         id from a DynamoDB table.
       Policies:
       - DynamoDBCrudPolicy:
-          TableName:
-            Ref: SampleTable
+          TableName: Users
       Environment:
         Variables:
-          SAMPLE_TABLE:
-            Ref: SampleTable
+          SAMPLE_TABLE: Users
       Events:
         Api:
           Type: Api
@@ -68,12 +64,10 @@ Resources:
         a DynamoDB table.
       Policies:
       - DynamoDBCrudPolicy:
-          TableName:
-            Ref: SampleTable
+          TableName: Users
       Environment:
         Variables:
-          SAMPLE_TABLE:
-            Ref: SampleTable
+          SAMPLE_TABLE: Users
       Events:
         Api:
           Type: Api
@@ -84,6 +78,7 @@ Resources:
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
+      TableName: Users
       PrimaryKey:
         Name: id
         Type: String

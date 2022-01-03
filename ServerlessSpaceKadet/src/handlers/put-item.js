@@ -29,6 +29,8 @@ exports.putItemHandler = async (event) => {
         Item: { id : id, name: name }
     };
 
+    console.info('params Table:', params.TableName);
+    console.info('params Item', params.Item);
     const result = await docClient.put(params).promise();
 
     const response = {

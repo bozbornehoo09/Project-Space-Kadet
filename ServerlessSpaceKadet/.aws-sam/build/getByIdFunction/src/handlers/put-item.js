@@ -6,6 +6,7 @@ const docClient = new dynamodb.DocumentClient();
 
 // Get the DynamoDB table name from environment variables
 const tableName = process.env.SAMPLE_TABLE;
+console.info('SAMPLE_TABLE', tableName);
 
 /**
  * A simple example includes a HTTP post method to add one item to a DynamoDB table.
@@ -29,6 +30,8 @@ exports.putItemHandler = async (event) => {
         Item: { id : id, name: name }
     };
 
+    console.info('params Table:', params.TableName);
+    console.info('params Item', params.Item);
     const result = await docClient.put(params).promise();
 
     const response = {
