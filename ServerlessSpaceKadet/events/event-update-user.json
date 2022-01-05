@@ -1,0 +1,4 @@
+{
+    "httpMethod": "POST",
+    "body": "{\"email\": \"Mac@McDirty.com\",\"name\": \"Christopher Osborne\", \"coinbaseAPIKey\": \"youHaveBeenHackedMac!\", \"amountToInvestDaily\": \"0.01\"}"
+}

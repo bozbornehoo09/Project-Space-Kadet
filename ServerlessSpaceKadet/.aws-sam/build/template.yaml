@@ -1,19 +1,18 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: ServerlessSpaceKadet
+Description: ServerlessSpaceKadet - Handles the backend of user CRUD API Flow
 Transform:
 - AWS::Serverless-2016-10-31
 Resources:
-  getAllItemsFunction:
+  getAllUsersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      Handler: src/handlers/get-all-users.getAllUsersHandler
       Runtime: nodejs14.x
       Architectures:
       - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from
-        a DynamoDB table.
+      Description: HTTP Method to scan all user emails (PK) from DynamoDB Table
       Policies:
       - DynamoDBCrudPolicy:
           TableName: Users
@@ -26,18 +25,17 @@ Resources:
           Properties:
             Path: /
             Method: GET
-      CodeUri: getAllItemsFunction
-  getByIdFunction:
+      CodeUri: getAllUsersFunction
+  getByEmailFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
+      Handler: src/handlers/get-by-email.getByEmailHandler
       Runtime: nodejs14.x
       Architectures:
       - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by
-        id from a DynamoDB table.
+      Description: Retrieve 1 Users Information from DynamoDB Table
       Policies:
       - DynamoDBCrudPolicy:
           TableName: Users
@@ -48,20 +46,19 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /{id}
+            Path: /{email}
             Method: GET
-      CodeUri: getByIdFunction
-  putItemFunction:
+      CodeUri: getByEmailFunction
+  addUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/put-item.putItemHandler
+      Handler: src/handlers/add-user.addUserHandler
       Runtime: nodejs14.x
       Architectures:
       - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to
-        a DynamoDB table.
+      Description: HTTP method to add user to DynamoDB Table
       Policies:
       - DynamoDBCrudPolicy:
           TableName: Users
@@ -72,15 +69,61 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /add
             Method: POST
-      CodeUri: putItemFunction
+      CodeUri: addUserFunction
+  updateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/update-user.updateUserHandler
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: HTTP method to update existing user DynamoDB table entry
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: Users
+      Environment:
+        Variables:
+          SAMPLE_TABLE: Users
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /update
+            Method: POST
+      CodeUri: updateUserFunction
+  deleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-user.deleteUserHandler
+      Runtime: nodejs14.x
+      Architectures:
+      - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: HTTP method to delete existing user from DynamoDB table
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: Users
+      Environment:
+        Variables:
+          SAMPLE_TABLE: Users
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /delete/{email}
+            Method: GET
+      CodeUri: deleteUserFunction
   SampleTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: Users
       PrimaryKey:
-        Name: id
+        Name: email
         Type: String
       ProvisionedThroughput:
         ReadCapacityUnits: 2

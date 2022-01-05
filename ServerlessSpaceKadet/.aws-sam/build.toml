@@ -7,6 +7,6 @@ runtime = "nodejs14.x"
 architecture = "x86_64"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["getAllItemsFunction", "getByIdFunction", "putItemFunction"]
+functions = ["getAllUsersFunction", "getByEmailFunction", "addUserFunction", "updateUserFunction", "deleteUserFunction"]
 
 [layer_build_definitions]

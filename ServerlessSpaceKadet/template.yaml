@@ -19,16 +19,16 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  getAllUsersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      Handler: src/handlers/get-all-users.getAllUsersHandler
       Runtime: nodejs14.x
       Architectures:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Description: HTTP Method to scan all user emails (PK) from DynamoDB Table
       Policies:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
@@ -47,16 +47,16 @@ Resources:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
+  getByEmailFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
+      Handler: src/handlers/get-by-email.getByEmailHandler
       Runtime: nodejs14.x
       Architectures:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+      Description: Retrieve 1 Users Information from DynamoDB Table
       Policies:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
@@ -69,22 +69,22 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /{id}
+            Path: /{email}
             Method: GET
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
+  addUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/put-item.putItemHandler
+      Handler: src/handlers/add-user.addUserHandler
       Runtime: nodejs14.x
       Architectures:
         - x86_64
       MemorySize: 128
       Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+      Description: HTTP method to add user to DynamoDB Table
       Policies:
         # Give Create/Read/Update/Delete Permissions to the SampleTable
         - DynamoDBCrudPolicy:
@@ -97,10 +97,63 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /add
             Method: POST
   # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
+
+
+# This is a Lambda function config associated with the source code: put-item.js
+  updateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/update-user.updateUserHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: HTTP method to update existing user DynamoDB table entry
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: Users
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: Users
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /update
+            Method: POST
+# This is a Lambda function config associated with the source code: put-item.js
+  deleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/delete-user.deleteUserHandler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: HTTP method to delete existing user from DynamoDB table
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: Users
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: Users
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /delete/{email}
+            Method: GET
+
 
   # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
   SampleTable:
@@ -108,7 +161,7 @@ Resources:
     Properties:
       TableName: Users
       PrimaryKey:
-        Name: id
+        Name: email
         Type: String
       ProvisionedThroughput:
         ReadCapacityUnits: 2
